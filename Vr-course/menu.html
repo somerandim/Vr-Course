@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link rel="stylesheet" href="/menu-style.css">
+    <script src="menu-script.js" defer></script>
+    <!-- A-Frame Library -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://rawgit.com/ngokevin/aframe-event-set-component/master/dist/aframe-event-set-component.min.js"></script>
+    <script>
+      function navigateTo(url) {
+        window.location.href = url;
+      }
+    </script>
+  </head>
+  <body>
+    <a-scene>
+        <a-sky src="https://cdn.glitch.global/a54f70de-b2e3-44e2-9524-e6695ff38d61/sky.jpg?v=1732294924331"></a-sky>
+        
+        <!-- Camera and Cursor for interaction -->
+        <a-entity id="cameraEntity">
+          <a-camera>
+            <a-cursor color="yellow"></a-cursor>
+          </a-camera>
+        </a-entity>
+
+        <!-- Return Box -->
+        <a-box 
+          class="return"     
+          position="3 2 -5" 
+          color="red"
+          src="https://cdn.glitch.global/a54f70de-b2e3-44e2-9524-e6695ff38d61/TCom_DustOverlay_overlay_M.jpg?v=1732313692268"         
+          width="3" 
+          height="2" 
+          depth="1" 
+          onclick="navigateTo('/')">
+        </a-box>
+        <a-text value="Return" position="3 2 -4.5" color="white" align="center" scale="1.5 1.5 1.5"></a-text>
+
+        <!-- Speed Block -->
+        <a-box 
+          class="speedBlock" 
+          position="-3 2 -5" 
+          src="https://cdn.glitch.global/a54f70de-b2e3-44e2-9524-e6695ff38d61/TCom_DustOverlay_overlay_M.jpg?v=1732313692268"     
+          width="3" 
+          height="2" 
+          depth="1">
+        </a-box>
+        <a-text value="Open Speed Settings" position="-3 3 -5" color="white" align="center"></a-text>
+
+        <!-- Speed Settings Wall (Initially hidden) -->
+        <a-box 
+          id="speedWall" 
+          position="0 20 -3" 
+          color="green" 
+          src="https://cdn.glitch.global/a54f70de-b2e3-44e2-9524-e6695ff38d61/TCom_DustOverlay_overlay_M.jpg?v=1732313692268"    
+          width="5" 
+          height="5" 
+          depth="0.1">
+        </a-box>
+        <a-text value="Choose an Audio" position="-3 2 -4.5" color="white" align="center" scale="1.5 1.5 1.5"></a-text>
+    </a-scene>
+  </body>
+</html>

@@ -1,0 +1,430 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A-Frame Interactive Scene</title>
+
+    <!-- Core A-Frame -->
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+
+    <!-- A-Frame Extensions -->
+    <script src="js/aframe-environment-component.js"></script>
+    <script src="js/controller-listener.js"></script>
+    <script src="js/player-move.js"></script>
+    <script src="js/raycaster-extras.js"></script>
+    <script src="js/pdf.js"></script>
+    <script src="js/interactive-book.js"></script>
+
+    <!-- Custom Scripts -->
+    <script>
+        let is_TV_on = false;
+        let is_light_on = false;
+        let is_time_machine_running = false;
+
+        function sleep(time) {
+            return new Promise(resolve => setTimeout(resolve, time));
+        }
+
+        function toggle_audio(audio_file, play) {
+            if (play) play_audio(audio_file);
+            else pause_audio(audio_file);
+        }
+
+        function play_audio(audio_file) {
+            const audio = document.getElementById(audio_file);
+            audio.play();
+        }
+
+        function pause_audio(audio_file) {
+            const audio = document.getElementById(audio_file);
+            audio.pause();
+        }
+
+        function switch_light() {
+            if (is_time_machine_running) return;
+            const light = document.querySelector("#insideLight");
+            const text = document.querySelector("#SwitchText");
+
+            text.setAttribute('visible', 'false');
+            play_audio("light_switch");
+
+            if (!is_light_on) {
+                light.setAttribute('light', 'color', '#222');
+                is_light_on = true;
+            } else {
+                light.setAttribute('light', 'color', '#DDD');
+                is_light_on = false;
+            }
+        }
+
+        function TVClick() {
+            if (is_time_machine_running) return;
+            const screen = document.querySelector("#TVScreen");
+            const text = document.querySelector("#TVText");
+
+            text.setAttribute('visible', 'false');
+
+            if (!is_TV_on) {
+                screen.setAttribute('material', 'color', 'white');
+                is_TV_on = true;
+            } else {
+                screen.setAttribute('material', 'color', 'black');
+                is_TV_on = false;
+            }
+            toggle_audio("champion_league", is_TV_on);
+        }
+
+        AFRAME.registerComponent("name-on-hover", {
+            schema: { target: { type: "selector", default: "" } },
+            init: function () {
+                const target = this.data.target;
+                const el = this.el;
+                this.setupNamePos();
+                el.addEventListener("mouseenter", () => target.emit("in"));
+                el.addEventListener("mouseleave", () => target.emit("out"));
+            },
+            setupNamePos: function () {
+                const name = this.data.target;
+                const elPos = this.el.getAttribute("position");
+                name.setAttribute("position", {
+                    x: elPos.x,
+                    y: elPos.y + 2,
+                    z: elPos.z,
+                });
+            },
+        });
+    </script>
+</head>
+<body>
+<a-scene>
+    <a-assets>
+        <img id="wood" src="assets/hardwood.jpg">
+        <img id="tile" src="assets/wall.jpg">
+        <img id="tile_2" src="assets/wall_3.jpeg">
+        <img id="floor" src="assets/floor_2.png">
+        <img id="wood_material" src="assets/wood_2.png">
+        <img id="TVScreenPic" src="assets/champions_league.png" >
+
+
+        <audio id="cat_meow" src="assets/Cat-meow-noise.mp3"></audio>
+        <audio id="champion_league" src="assets/uefa_champions_league.mp3"></audio>
+        <audio id="light_switch" src="assets/switch_click.mp3"></audio>
+        <audio id="time_machine" src="assets/time_machine.mp3"></audio>
+        <audio id="teleport" src="assets/teleport_sound.mp3"></audio>
+        <audio id="bar_background" src="assets/bar_background.mp3"></audio>
+
+        <a-asset-item id="my_cat" src="assets/cat_husa/scene.gltf">
+        <a-asset-item id="toy_car" src="assets/fallout_car_2/scene.gltf">
+        <a-asset-item id="fridge" src="assets/fridge/scene.gltf">
+        <a-asset-item id="rail_switch" src="assets/rail_switch/scene.gltf">
+        <a-asset-item id="girl_1" src="assets/pirate/scene.gltf">
+        <a-asset-item id="girl_2" src="assets/girl_2/scene.gltf">
+        <a-asset-item id="boy_1" src="assets/boy_1/scene.gltf">
+        <a-asset-item id="mask" src="assets/mask/scene.gltf">
+        <a-asset-item id="toiletpaper" src="assets/toiletpaper/scene.gltf">
+        <a-asset-item id="ceiling_fan_3" src="assets/ceilingFan_3/scene.gltf">
+        <a-asset-item id="sofa_2" src="assets/sofa_2/scene.gltf">
+        <a-asset-item id="guitar" src="assets/guitar/scene.gltf">
+        <a-asset-item id="game_machine" src="assets/game_machine/scene.gltf">
+
+    </a-assets>
+
+    <a-entity id="cam_parent" position="-1 3.7 8" rotation="0 -20 0">
+<!--<a-entity position="10 14 12" rotation="0 50 0">-->
+
+        <a-camera id="cam" universal-controls>
+
+            <a-entity raycaster="far: 8; objects: .intersectable" cursor geometry="primitive: ring; radiusOuter: 0.015;
+                              radiusInner: 0.01; segmentsTheta: 32" material="color: #283644; shader: flat"
+                      position="0 0 -0.75"></a-entity>
+        </a-camera>
+    </a-entity>
+
+
+    
+
+
+
+    <!-- House Frame -->
+    <!--Roof-->
+    <a-triangle src="assets/roof-tile.jpg" position="6.871 33.947 -7.836" rotation="-27.5 180 0" scale="75 35 25"
+                material="side:double" geometry=""></a-triangle>
+    <a-triangle src="assets/roof-tile.jpg" position="6.871 33.947 7.812" rotation="-27.5 0 0" scale="75 35 25"
+                material="side:double"></a-triangle>
+    <a-triangle src="assets/roof-tile.jpg" position="25.237 33.947 -0.043" rotation="-50.5 90 0" scale="31.5 48 25"
+                material="side:double"></a-triangle>
+    <a-triangle src="assets/roof-tile.jpg" position="-11.759 33.947 0.011" rotation="50.5 90 0" scale="31.5 48 25"
+                material="side:double"></a-triangle>
+
+   <!-- Outer Walls -->
+    <!-- Front Wall -->
+    <a-box src="#tile_2" position="10 5 15.1" geometry="height:30;width:100;depth:0.2"></a-box>
+    <!-- Back Wall -->
+    <a-box src="#tile_2" position="10 5 -15" geometry="height:30;width:100;depth:0.2"></a-box>
+    <!-- Left Wall -->
+    <a-box src="#tile_2" position="-27.1 5 0" geometry="height:30;width:0.2;depth:30"></a-box>
+    <!-- Right Wall -->
+    <a-box src="#tile_2" position="15 5 0" geometry="height:30;width:0.2;depth:30"></a-box>
+
+    
+
+
+    <!-- Floors -->
+    <a-box position="-5.996 0 0" src="#floor" depth="30" height=".2" width="60" geometry="width:42"></a-box>
+    <a-box position="20 .25 0" src="#floor" depth="30" height=".2" width="60" geometry="width:42"></a-box>
+    <a-box position="-5.996 20 0" src="#floor" depth="30" height=".2" width="60" geometry="width:42"></a-box>
+
+    
+    
+<!--    &lt;!&ndash;Environment&ndash;&gt;-->
+    <a-entity environment="preset: contact" groundColor: #445 side: double; repeat: 100 100;></a-entity>
+    <a-entity id="insideLight" light="color:#DDD;type:ambient" position="0 6.486 2.815"></a-entity>
+
+
+    <!--Pet Cat-->
+    <a-entity
+            id="myTarget"
+            scale="1 .001 1"
+            look-at="#camera"
+            text="color: black;align: center; value: Pet me!; width: 6; wrap-count: 10"
+            animation__1="startEvents: in;property: scale; dur: 200; from: 1 .001 7; to: 1 1 1"
+            animation__2="startEvents: out;property: scale; dur: 200; from: 1 1 1; to: 1 .001 1"
+
+    ></a-entity>
+
+
+    <a-box material="color:tomato;transparent:true;opacity:0" depth="3" height="3" width="3"
+           sound="src:#cat_meow; on: click"
+           class="intersectable" position="1.969 0.214 -0.999"
+                name-on-hover="target: #myTarget"-->
+    <!--               animation="property: position;easing: easeInSine;loop:true;dir: alternate;dur: 2000"-->
+    ></a-box>
+
+    <a-entity id="cat_box" visible="true">
+        <a-gltf-model id="cat" src="#my_cat" rotation="0 -30 0" position="1.969 0.214 -3.174"
+                      animation-mixer scale="0.15 0.15 0.15">
+            <a-animation attribute="scale"
+                         dur="3000"
+                         from="0.15 0.15 0.15"
+                         to="0.16 0.16 0.16"
+                         repeat="indefinite"></a-animation>
+
+        </a-gltf-model>
+    </a-entity>
+
+
+
+
+    <!--Switch-->
+    <a-entity id="dimmer" onclick="switch_light()" position="-25 4 -19" rotation="0 90 0" class="intersectable">
+        <a-text id="SwitchText" align="center" color="#FFF" position="-33.681 1 27" rotation="0 90 0"
+                text="value:Light switch;color:#d92641;width:9"></a-text>
+
+        <a-box position="-33.681 0.01 27" width="0.5" height="0.75" depth="0.1" color="gray" rotation="0 90 0"></a-box>
+        <a-box position="-33.681 0.02 27" width="0.1" height="0.2" depth="0.1" color="red" rotation="0 90 0"></a-box>
+
+    </a-entity>
+
+    <!-- Fireplace -->
+    <a-entity id="fireplace">
+        <a-box src="assets/fireplace_flame.png" position="-4.081 2.983 -14.384"
+               geometry="depth:0.85;height:5.390000000000001;width:7.05"></a-box>
+    </a-entity>
+
+    <!-- Firewood -->
+    <a-obj-model id="firewood" src="assets/wood_logs/wood_logs.obj" mtl="assets/wood_logs/wood_logs.mtl"
+                 position="-6.303 0.386 -13.074" rotation="0 60 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+
+    <!-- Ceiling Items living room -->
+    <a-gltf-model id="ceiling_fan_3" src="#ceiling_fan_3" position="-0.351 19 3.703" animation-mixer=""
+                  scale="2 2 2 " visible="" gltf-model="">
+        <a-animation easing="linear" repeat="indefinite" attribute="rotation" from="0 0 0" to="0 360 0"
+                     dur="1400"></a-animation>
+    </a-gltf-model>
+
+
+   
+
+
+
+
+    <!-- Door -->
+    <a-obj-model scale="0.03 0.03 0.03" position="-1.44 0.051 15.89" src="assets/puerta.obj" mtl="assets/puerta.mtl"
+                 class="intersectable"></a-obj-model>
+
+    <!--Bookself-->
+    <a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="14.5 3 -12" rotation="0 -90 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+<a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="14.5 3 -9.5" rotation="0 -90 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+<a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="14.5 3 -7" rotation="0 -90 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+<a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="14.5 3 -4.5" rotation="0 -90 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+<a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="14.5 3 -2" rotation="0 -90 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+<a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="14.5 3 0.5" rotation="0 -90 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+<a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="14.5 3 3" rotation="0 -90 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+<a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="14.5 3 5.5" rotation="0 -90 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+<a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="14.5 3 8" rotation="0 -90 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+<a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="14.5 3 10.5" rotation="0 -90 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+<a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="14.5 3 13" rotation="0 -90 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+
+<a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="12 3 14.5" rotation="0 180 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+             <a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="9.5 3 14.5" rotation="0 180 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+             <a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="7 3 14.5" rotation="0 180 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+             <a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="4.5 3 14.5" rotation="0 180 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+             
+             <a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="12 3 -14.5" rotation="0 0 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+             <a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="9.5 3 -14.5" rotation="0 0 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+             <a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="7 3 -14.5" rotation="0 0 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+             <a-obj-model id="bookshelf" src="assets/full-bookcase/full-bookcase.obj" mtl="assets/full-bookcase/full-bookcase.mtl"
+             position="4.5 3 -14.5" rotation="0 0 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+
+
+             <!-- Sofa -->
+    <!--        <a-obj-model src="assets/sofa1/sofa1.obj" mtl="assets/sofa1/sofa1.mtl" id="couch" position="-7.232 0.46 8.5794" rotation="0 90 0" scale="0.04 0.04 0.04" material=""></a-obj-model>-->
+    <a-gltf-model id="sofa_2" src="#sofa_2" position="-24 0 0" rotation="0 90 0"
+    animation-mixer="" scale="0.008 0.008 0.008" visible="" gltf-model="">
+</a-gltf-model>
+
+    <a-obj-model src="assets/glass_table_office/glass_table_office.obj"
+                 mtl="assets/glass_table_office/glass_table_office.mtl" id="coffee-table" position="-18 0 0"
+                 rotation="0 90 0" scale="0.03 0.03 0.03" material=""></a-obj-model>
+
+
+                 
+             
+
+
+
+    
+
+    <a-obj-model id="armchair2" src="assets/armChair2/armChair2.obj" mtl="assets/armChair2/armChair2.mtl"
+                 position="9 0.15 0" scale="0.04 0.04 0.04" material="" rotation="0 -90 0"></a-obj-model>
+
+
+
+
+     
+                 <a-assets>
+                    <img id="gradient" src="images/gradient-fade.png" />
+                    <img id="border"   src="images/border.png" />
+                </a-assets>
+            
+                <a-sky color = "#000337"></a-sky>
+            
+                <a-entity 
+                    id="player" 
+                    position="0 0 0" 
+                    player-move="controllerListenerId: #controller-data;
+                                 navigationMeshClass: environmentGround;">
+                    
+                    <a-camera></a-camera>
+                
+                    <a-entity 
+                        id="controller-data" 
+                        controller-listener="leftControllerId:  #left-controller; 
+                                             rightControllerId: #right-controller;">
+                    </a-entity>
+            
+                    <a-entity 
+                        id="left-controller"
+                        oculus-touch-controls="hand: left">
+                    </a-entity>
+            
+                    <a-entity
+                        id="right-controller"
+                        oculus-touch-controls="hand: right"
+                        raycaster="objects: .raycaster-target, .environmentGround;"
+                        raycaster-extras="controllerListenerId: #controller-data; 
+                                          beamImageSrc: #gradient; beamLength: 0.5;">
+                    </a-entity>
+            
+                </a-entity>     
+                <a-assets>
+                    <img id="gradient" src="images/gradient-fade.png" />
+                    <img id="border"   src="images/border.png" />
+                </a-assets>
+            
+                <a-sky color = "#000337"></a-sky>
+            
+                <a-entity 
+                    id="player" 
+                    position="0 0 0" 
+                    player-move="controllerListenerId: #controller-data;
+                                 navigationMeshClass: environmentGround;">
+                    
+                    <a-camera></a-camera>
+                
+                    <a-entity 
+                        id="controller-data" 
+                        controller-listener="leftControllerId:  #left-controller; 
+                                             rightControllerId: #right-controller;">
+                    </a-entity>
+            
+                    <a-entity 
+                        id="left-controller"
+                        oculus-touch-controls="hand: left">
+                    </a-entity>
+            
+                    <a-entity
+                        id="right-controller"
+                        oculus-touch-controls="hand: right"
+                        raycaster="objects: .raycaster-target, .environmentGround;"
+                        raycaster-extras="controllerListenerId: #controller-data; 
+                                          beamImageSrc: #gradient; beamLength: 0.5;">
+                    </a-entity>
+            
+                </a-entity>
+
+
+
+  <a-entity
+      id="interactive-book"
+            position="-18 3 1.5" 
+                 interactive-book="fileName: assets/test10.pdf;
+                                   pageWidth: 1224; pageHeight: 1584;
+                                   coverText: Test Document;
+                                   controllerListenerId: #controller-data;">
+             </a-entity>
+                 
+             <a-entity
+                 id="interactive-book"
+                 position="-18  3 0 " 
+                 interactive-book="fileName: assets/wonderland.pdf;
+                                   pageWidth: 646; pageHeight: 958;
+                                   coverText: Alice's Adventures in Wonderland;
+                                   coverColor: #440088;
+                                   coverTextColor: #FFFFFF;
+                                   controllerListenerId: #controller-data;">
+             </a-entity>
+
+
+
+</a-scene>
+
+
+
+
+</body>
+</html>
+
+
+</body>
+</html>

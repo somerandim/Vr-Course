@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="https://glitch.com/favicon.ico" />
+
+    <!-- The website stylesheet -->
+    <link rel="stylesheet" href="/menu-style.css" />
+
+    <!-- The website JavaScript file -->
+    <script src="/menu-script.js" defer></script>
+
+    <!-- A-Frame Library -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    
+    <script src="https://rawgit.com/ngokevin/aframe-event-set-component/master/dist/aframe-event-set-component.min.js"></script>
+
+    <script>
+      // JavaScript function to handle navigation
+      function navigateTo(url) {
+        window.location.href = url;
+      }
+    </script>
+  </head>
+  <body>
+    <a-scene>
+      
+      <!-- Sky -->
+      <a-sky src="https://cdn.glitch.global/a54f70de-b2e3-44e2-9524-e6695ff38d61/sky.jpg?v=1732294924331"></a-sky>
+
+      <!-- Camera with cursor and dynamic-body for collision detection -->
+      <a-entity id="cameraEntity">
+        <a-camera>
+          <a-cursor color="yellow"></a-cursor>
+        </a-camera>
+      </a-entity>
+
+      <!-- Play Box (Static with Physics) -->
+      <a-box 
+        class="play"
+        position="0 3.25 -5" 
+        color="White"
+        src="https://cdn.glitch.global/a54f70de-b2e3-44e2-9524-e6695ff38d61/boxes.jpg?v=1732284826503"     
+        repeat="2 2"     
+        width="2.5" 
+        height="1" 
+        depth="0.5"
+        onclick="navigateTo('quest-book.html')"
+        >
+      </a-box>
+      
+      <a-text 
+        value="Play" 
+        position="0 3.25 -4.75" 
+        align="center" 
+        color="white" 
+        scale="1.5 1.5 1.5">
+      </a-text>
+
+      <!-- Settings Box (Static with Physics) -->
+      <a-box 
+        class="Settings"
+        position="0 2 -5" 
+        color="White"
+        src="https://cdn.glitch.global/a54f70de-b2e3-44e2-9524-e6695ff38d61/boxes.jpg?v=1732284826503"
+        width="2.5" 
+        height="1" 
+        depth="0.5"
+        onclick="navigateTo('/menu.html')"
+       >
+      </a-box>
+      
+      <a-text 
+        value="Settings" 
+        position="0 2 -4.75" 
+        align="center" 
+        color="white" 
+        scale="1.5 1.5 1.5">
+      </a-text>
+
+      <!-- Exit Box (Static with Physics) -->
+      <a-box 
+        class="Exit"
+        position="0 0.75 -5" 
+        color="White"
+        src="https://cdn.glitch.global/a54f70de-b2e3-44e2-9524-e6695ff38d61/boxes.jpg?v=1732284826503"
+        width="2.5" 
+        height="1" 
+        depth="0.5"
+        >
+      </a-box>
+      
+      <a-text 
+        value="Exit" 
+        position="0 0.75 -4.75" 
+        align="center" 
+        color="white" 
+        scale="1.5 1.5 1.5">
+      </a-text>
+      
+    </a-scene>
+
+    <footer class="footer">
+    </footer>
+  </body>
+</html>
